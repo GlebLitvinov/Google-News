@@ -13,8 +13,10 @@ import android.widget.TextView;
 import com.project.googlenews.R;
 import com.project.googlenews.infrastructure.json.JsonGetterAsync;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,18 +40,32 @@ public class MainActivity extends AppCompatActivity {
             getterAsync.execute();
         try {
             JSONObject object = getterAsync.get();
+
             View layout = findViewById(R.id.lay_text);
             TextView textView = (TextView) layout.findViewById(R.id.large_text);
-            textView.setText(object.toString());
+            textView.setText(parseJson(object));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
 
 
+    private String parseJson(JSONObject object) throws JSONException {
+        Iterator<String> iterator = object.keys();
+        String res = new String();
+
+        //while (iterator.hasNext()){
+            String current = (String) object.get("title");
+
+        res += object.getString(current) + "\n";
+    //}
+        return res;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

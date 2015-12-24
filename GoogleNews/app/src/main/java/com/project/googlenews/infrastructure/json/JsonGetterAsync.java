@@ -48,6 +48,7 @@ public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
             builder.append(line);
         }
 
+
         JSONObject json = new JSONObject(builder.toString());
         return json;
     }
