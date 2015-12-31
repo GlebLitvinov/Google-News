@@ -16,7 +16,9 @@ import java.nio.charset.Charset;
 
 public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
 
+
     @Override
+
     protected void onPreExecute() {
         // Do stuff before the operation
     }
@@ -24,7 +26,7 @@ public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
     @Override
     protected JSONObject doInBackground(String... params){
         try {
-            JSONObject object = getJSONFromUrl();
+            JSONObject object = getJSONFromUrl(params[0]);
             return object;
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,22 +36,20 @@ public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
         return null;
     }
 
-    private JSONObject getJSONFromUrl() throws IOException, JSONException {
-        URL url = new URL("https://ajax.googleapis.com/ajax/services/search/news?" +
-                "v=1.0&q=barack%20obama&userip=INSERT-USER-IP");
-        //URLConnection connection = url.openConnection();
-        //connection.addRequestProperty("Referer", /* Enter the URL of your site here */);
+    private JSONObject getJSONFromUrl(String urlString) throws IOException, JSONException {
 
+        URL url = new URL(urlString);
         String line;
         StringBuilder builder = new StringBuilder();
         InputStream is =url.openStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         while((line = reader.readLine()) != null) {
             builder.append(line);
         }
 
 
         JSONObject json = new JSONObject(builder.toString());
+        Log.i("json",json.toString());
         return json;
     }
 
