@@ -1,14 +1,16 @@
 package com.project.googlenews.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,6 +22,7 @@ import com.project.googlenews.infrastructure.item.ItemFactory;
 import com.project.googlenews.infrastructure.json.JsonGetterAsync;
 import com.project.googlenews.model.Item;
 import com.project.googlenews.model.SearchField;
+import com.project.googlenews.model.listener.IGoToListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,14 +30,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements IGoToListener {
 
     private ListView listView;
     TextView text;
 
+    private ItemFactory factory;
+
+    private static void a(Context context, IGoToListener as){
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        a(this,this);
+        factory = new ItemFactory(this,this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.list_view_main);
@@ -51,8 +61,8 @@ public class MainActivity extends Activity {
                 JsonGetterAsync getterAsync = new JsonGetterAsync();
                 getterAsync.execute(request);
                 try {
-                    List<Item> list = ItemFactory.createItem(getterAsync.get(), getApplicationContext());
-                    ItemAdapter adapter = new ItemAdapter(getApplicationContext(),R.layout.item,list);
+                    List<Item> list = factory.createItem(getterAsync.get());
+                    ItemAdapter adapter = new ItemAdapter(getApplicationContext(), R.layout.item, list);
                     listView.setAdapter(adapter);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -63,6 +73,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 
 
     private void saveBitmap(String filename, Bitmap bmp) {
@@ -105,4 +116,12 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void goTo(String url) {
+        Intent browserView = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserView);
+    }
+
+
 }

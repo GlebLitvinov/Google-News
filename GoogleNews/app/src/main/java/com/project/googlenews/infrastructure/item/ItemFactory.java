@@ -3,11 +3,10 @@ package com.project.googlenews.infrastructure.item;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.project.googlenews.activities.MainActivity;
 import com.project.googlenews.infrastructure.url.UrlDecoder;
 import com.project.googlenews.model.Item;
+import com.project.googlenews.model.listener.IGoToListener;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,8 +18,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ItemFactory {
-    public static List<Item> createItem(JSONObject source, Context context) {
-        List<Item> list = new ArrayList<Item>();
+
+    private Context context;
+    private IGoToListener listener;
+
+    public ItemFactory(Context context, IGoToListener listener) {
+        this.context = context;
+        this.listener = listener;
+    }
+
+    public  List<Item> createItem(JSONObject source) {
+        List<Item> list = new ArrayList<>();
         try {
             JSONArray array = source.getJSONObject("responseData").getJSONArray("results");
             for (int i = 0; i < array.length(); i++) {
@@ -30,12 +38,11 @@ public class ItemFactory {
                     bitmap = parseBitmap(object.getJSONObject("image").getString("url"));
                 else bitmap = null;
                 String title = URLDecoder.decode(object.getString("title"), "UTF-8");
-              //  title = StringEscapeUtils.unescapeHtml(title);
                 String content = URLDecoder.decode(object.getString("content"), "UTF-8");
-                //content = StringEscapeUtils.unescapeHtml(content);
                 String publisher = URLDecoder.decode(object.getString("publisher"), "UTF-8");
                 String date = URLDecoder.decode(object.getString("publishedDate"), "UTF-8");
-                list.add(new Item(context, bitmap, title, date, publisher, content));
+                String sourceUrl = URLDecoder.decode(object.getString("unescapedUrl"), "UTF-8");
+                list.add(new Item(context, bitmap, title, date, publisher, content,sourceUrl,listener));
             }
             return list;
         } catch (IOException e) {
