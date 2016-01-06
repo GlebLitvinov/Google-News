@@ -43,6 +43,8 @@ public class Item extends View {
         init();
         if(image != null)
          this.image.setImageBitmap(image);
+        else
+            this.image.setMaxHeight(0);
         this.title.setText(Html.fromHtml(title));
         this.date.setText(date);
         this.source.setText(source);

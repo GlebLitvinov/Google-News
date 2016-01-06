@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10sp"
     android:orientation="vertical">
 
     <TextView
@@ -14,18 +15,17 @@
         android:text="title"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#3F51B5" />
+
     <ImageView
         android:id="@+id/itemImageID"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        />
+        android:layout_height="80sp"
+        android:layout_gravity="center"
+        android:scaleType="centerInside" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-
 
 
         <LinearLayout
@@ -65,10 +65,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_weight="1"
                     android:id="@+id/textID"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="New Text"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#000000"
@@ -77,11 +77,10 @@
                 <ImageButton
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/button_custom"
-                    android:scaleType="fitXY"
-                    android:clickable="true"
                     android:background="#FFFFFF"
-                     />
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/button_custom" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

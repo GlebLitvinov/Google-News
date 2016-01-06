@@ -23,6 +23,13 @@ public class SearchField extends Fragment {
     private Context context;
     View myView;
 
+    private static final String patternByRelevance = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=%s&rsz=8&start=%s&userip=192.168.0.1";
+    private static final String patternByDate = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=%s&rsz=8&scoring=d&start=%s&userip=192.168.0.1";
+
+
+
+
+
 
 
     @Override
@@ -41,7 +48,7 @@ public class SearchField extends Fragment {
             @Override
             public void onClick(View v) {
                 String request = text.getText().toString();
-                request = convertText(request);
+                request = convertText(request,0,false);
 
                 Log.i("request", request);
 
@@ -51,15 +58,23 @@ public class SearchField extends Fragment {
     }
 
 
-    public static String convertText(String source) {
+    public static String convertText(String source,int start,boolean byDate) {
         String s = null;
         try {
             s = URLEncoder.encode(source, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        if(source.length() == 0) s = "%7F";
         Log.i("convert", s);
-        s = String.format("https://ajax.googleapis.com/ajax/services/search/news?v=1.0&rzs=8&q=%s&userip=192.168.0.1", s);
+        String pattern;
+        if(byDate == false){
+            pattern = patternByRelevance;
+        } else{
+            pattern = patternByDate;
+        }
+
+        s = String.format(pattern, s,start);
         return s;
     }
 }

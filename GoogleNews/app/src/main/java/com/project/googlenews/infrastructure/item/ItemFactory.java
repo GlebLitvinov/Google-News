@@ -2,8 +2,9 @@ package com.project.googlenews.infrastructure.item;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
-import com.project.googlenews.infrastructure.url.UrlDecoder;
+import com.project.googlenews.infrastructure.url.BitmapDecoder;
 import com.project.googlenews.model.Item;
 import com.project.googlenews.model.listener.IGoToListener;
 
@@ -12,15 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ItemFactory {
 
-    private Context context;
-    private IGoToListener listener;
+    private final Context context;
+    private final IGoToListener listener;
 
     public ItemFactory(Context context, IGoToListener listener) {
         this.context = context;
@@ -37,11 +37,11 @@ public class ItemFactory {
                 if (object.has("image"))
                     bitmap = parseBitmap(object.getJSONObject("image").getString("url"));
                 else bitmap = null;
-                String title = URLDecoder.decode(object.getString("title"), "UTF-8");
-                String content = URLDecoder.decode(object.getString("content"), "UTF-8");
-                String publisher = URLDecoder.decode(object.getString("publisher"), "UTF-8");
-                String date = URLDecoder.decode(object.getString("publishedDate"), "UTF-8");
-                String sourceUrl = URLDecoder.decode(object.getString("unescapedUrl"), "UTF-8");
+                String title = object.getString("title");
+                String content = object.getString("content");
+                String publisher = object.getString("publisher");
+                String date = object.getString("publishedDate");
+                String sourceUrl = object.getString("unescapedUrl");
                 list.add(new Item(context, bitmap, title, date, publisher, content,sourceUrl,listener));
             }
             return list;
@@ -57,11 +57,17 @@ public class ItemFactory {
         return null;
     }
 
+    public float spToPixels(Context context, float sp) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return sp*scaledDensity;
+    }
 
-    private static Bitmap parseBitmap(String url) throws IOException, ExecutionException, InterruptedException {
-        UrlDecoder decoder = new UrlDecoder();
+    private  Bitmap parseBitmap(String url) throws IOException, ExecutionException, InterruptedException {
+        BitmapDecoder decoder = new BitmapDecoder((int) spToPixels(context,80));
         decoder.execute(url);
         Bitmap bitmap = decoder.get();
+        if(bitmap != null)
+            Log.i("w + h",bitmap.getWidth() + " + " +bitmap.getHeight());
         return bitmap;
     }
 }

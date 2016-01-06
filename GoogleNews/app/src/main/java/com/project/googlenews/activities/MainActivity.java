@@ -7,14 +7,19 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.googlenews.R;
 import com.project.googlenews.infrastructure.item.ItemAdapter;
@@ -24,9 +29,12 @@ import com.project.googlenews.model.Item;
 import com.project.googlenews.model.SearchField;
 import com.project.googlenews.model.listener.IGoToListener;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,65 +42,92 @@ public class MainActivity extends Activity implements IGoToListener {
 
     private ListView listView;
     TextView text;
-
+    List<Item> list;
     private ItemFactory factory;
-
-    private static void a(Context context, IGoToListener as){
-
-    }
+    private String request;
+    private ItemAdapter adapter;
+    private Button btnLoadMore;
+    private Spinner spinner;
+    private Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        a(this,this);
-        factory = new ItemFactory(this,this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = (ListView) findViewById(R.id.list_view_main);
-
-        // присваиваем адаптер списку
-        Button searchButton = (Button) findViewById(R.id.search_button);
+        factory = new ItemFactory(this, this);
+        searchButton = (Button) findViewById(R.id.search_button);
         text = (EditText) findViewById(R.id.search_request);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String request = text.getText().toString();
-                request = SearchField.convertText(request);
-                Log.i("request", request);
-                JsonGetterAsync getterAsync = new JsonGetterAsync();
-                getterAsync.execute(request);
-                try {
-                    List<Item> list = factory.createItem(getterAsync.get());
-                    ItemAdapter adapter = new ItemAdapter(getApplicationContext(), R.layout.item, list);
-                    listView.setAdapter(adapter);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                adapter.clear();
+                listView.smoothScrollToPosition(0);
+                btnLoadMore.setVisibility(View.VISIBLE);
+                btnLoadMore.setClickable(true);
+                request = text.getText().toString();
+                String current = SearchField.convertText(request, 0, spinner.getSelectedItemId() == 1);
+                Log.i("request", current);
+
+                fillListView(current);
 
             }
         });
+        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                // показываем позиция нажатого элемента
+               searchButton.callOnClick();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+
+        listView = (ListView) findViewById(R.id.list_view_main);
+        // LoadMore button
+        btnLoadMore = new Button(this);
+        btnLoadMore.setText("Load More");
+
+        list = new LinkedList<>();
+        listView.addFooterView(btnLoadMore);
+        adapter = new ItemAdapter(this, R.layout.item);
+        listView.setAdapter(adapter);
+        btnLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String current = SearchField.convertText(request, adapter.getCount(), spinner.getSelectedItem() == 1);
+
+                Log.i("request", current);
+                fillListView(current);
+                if (adapter.getCount() > 55) {
+                    btnLoadMore.setVisibility(View.INVISIBLE);
+                    btnLoadMore.setClickable(false);
+                }
+            }
+        });
+        // Adding Load More button to lisview at bottom
+
+
+        // присваиваем адаптер списку
+
+        searchButton.callOnClick();
     }
 
 
-
-    private void saveBitmap(String filename, Bitmap bmp) {
-        FileOutputStream out = null;
+    private void fillListView(String request) {
+        JsonGetterAsync getterAsync = new JsonGetterAsync();
+        getterAsync.execute(request);
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + "/Pictures" + filename);
-            out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-        } catch (Exception e) {
-            Log.e("SaveBitmap", "FileOutStream failed");
+            list = (factory.createItem(getterAsync.get()));
+            adapter.addAll(list);
+
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
