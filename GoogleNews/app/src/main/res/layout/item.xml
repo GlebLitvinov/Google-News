@@ -75,12 +75,13 @@
                     android:textSize="20sp" />
 
                 <ImageButton
+                    android:id="@+id/button_favorite"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="#FFFFFF"
                     android:clickable="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/button_custom" />
+                    android:src="@drawable/unfavorite"
+                    android:scaleType="fitXY" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

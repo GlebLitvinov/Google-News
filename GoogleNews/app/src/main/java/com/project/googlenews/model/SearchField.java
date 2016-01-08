@@ -23,8 +23,8 @@ public class SearchField extends Fragment {
     private Context context;
     View myView;
 
-    private static final String patternByRelevance = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=%s&rsz=8&start=%s&userip=192.168.0.1";
-    private static final String patternByDate = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=%s&rsz=8&scoring=d&start=%s&userip=192.168.0.1";
+    private static final String patternByRelevance = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&ned=us&q=%s&rsz=8&start=%s&userip=192.168.0.1";
+    private static final String patternByDate = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&ned=us&q=%s&rsz=8&scoring=d&start=%s&userip=192.168.0.1";
 
 
 
@@ -65,7 +65,7 @@ public class SearchField extends Fragment {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(source.length() == 0) s = "%7F";
+        if(source.length() == 0) s = "%00";
         Log.i("convert", s);
         String pattern;
         if(byDate == false){

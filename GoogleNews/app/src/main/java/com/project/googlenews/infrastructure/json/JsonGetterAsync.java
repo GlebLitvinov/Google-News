@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 
 public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
@@ -39,9 +40,10 @@ public class JsonGetterAsync  extends AsyncTask <String, Void, JSONObject> {
     private JSONObject getJSONFromUrl(String urlString) throws IOException, JSONException {
 
         URL url = new URL(urlString);
+        URLConnection connection = url.openConnection();
         String line;
         StringBuilder builder = new StringBuilder();
-        InputStream is =url.openStream();
+        InputStream is =connection.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         while((line = reader.readLine()) != null) {
             builder.append(line);

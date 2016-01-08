@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.project.googlenews.infrastructure.url.BitmapDecoder;
 import com.project.googlenews.model.Item;
+import com.project.googlenews.model.listener.IFavoriteListener;
 import com.project.googlenews.model.listener.IGoToListener;
 
 import org.json.JSONArray;
@@ -21,10 +22,12 @@ public class ItemFactory {
 
     private final Context context;
     private final IGoToListener listener;
+    private final IFavoriteListener favoriteListener;
 
-    public ItemFactory(Context context, IGoToListener listener) {
+    public ItemFactory(Context context, IGoToListener listener,IFavoriteListener favoriteListener) {
         this.context = context;
         this.listener = listener;
+        this.favoriteListener = favoriteListener;
     }
 
     public  List<Item> createItem(JSONObject source) {
@@ -42,7 +45,7 @@ public class ItemFactory {
                 String publisher = object.getString("publisher");
                 String date = object.getString("publishedDate");
                 String sourceUrl = object.getString("unescapedUrl");
-                list.add(new Item(context, bitmap, title, date, publisher, content,sourceUrl,listener));
+                list.add(new Item(context, bitmap, title, date, publisher, content,sourceUrl,listener,favoriteListener));
             }
             return list;
         } catch (IOException e) {
