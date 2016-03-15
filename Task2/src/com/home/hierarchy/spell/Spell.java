@@ -16,6 +16,9 @@ public class Spell {
         if (heal < 0 || healthReduction < 0 || damage < 0){
             throw new SpellException("Spell power can't be negative");
         }
+        if(healthReduction != 0 && healthReduction < 10){
+            throw new SpellException("Health reduction mus be not less then 10");
+        }
         this.name = name;
         this.heal = heal;
         this.healthReduction = healthReduction;

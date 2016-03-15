@@ -28,11 +28,7 @@ public class Creature {
         if(health < 0) onDeath();
     }
 
-    public void onAttack(int damage) {
-        System.out.println("Charge!!!");
-    }
-
     private void onDeath() {
-        System.out.println("I'm dead");
+        System.out.println(name + ": I'm dead");
     }
 }

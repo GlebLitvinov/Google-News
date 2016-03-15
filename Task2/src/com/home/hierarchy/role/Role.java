@@ -1,5 +1,6 @@
 package com.home.hierarchy.role;
 
+import com.home.hierarchy.character.Creature;
 import com.home.hierarchy.character.Hero;
 import com.home.hierarchy.spell.Spell;
 
@@ -20,9 +21,6 @@ public abstract class Role {
         return spell;
     }
 
-    public String spellDescription(String heroName){
-        StringBuilder description = new StringBuilder();
-        description.append(String.format("%s casts %s!\n",heroName,spell.getName()));
-        return description.toString();
-    }
+
+    public abstract void castSpell(Hero from,Creature to);
 }

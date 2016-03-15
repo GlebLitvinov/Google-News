@@ -9,8 +9,4 @@ public class Character extends Creature{
         super(name,health);
         this.race = race;
     }
-
-    public void raceAbility(){
-        race.raceAbility(this);
-    }
 }
