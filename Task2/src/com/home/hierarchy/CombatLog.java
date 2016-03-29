@@ -4,22 +4,30 @@ import com.home.hierarchy.character.Creature;
 import com.home.hierarchy.character.Hero;
 import com.home.hierarchy.spell.Spell;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class CombatLog {
-    public static void log(Hero from, Creature to, Spell spell) {
+
+    public static String getLog(Hero from, Creature to, Spell spell) {
+        StringBuilder builder = new StringBuilder();
         int bonus = from.getLevel();
         int damage = spell.getDamage();
         int healthReduction = spell.getHealthReduction();
         int heal = spell.getHeal();
-        System.out.println(String.format("%s casts %s", from.getName(), spell.getName()));
+        builder.append(String.format("%s casts %s\n", from.getName(), spell.getName()));
         if (heal > 0) {
-            System.out.println(String.format("%s restores %s health", from.getName(), heal + bonus));
+            builder.append(String.format("%s restores %s health\n", from.getName(), heal + bonus));
         }
-        if(to == null) return;
+        if(to == null) return builder.toString();
         if(healthReduction > 0){
-            System.out.println(String.format("%s deals %s damage to him/herself", from.getName(), healthReduction - bonus));
+            builder.append(String.format("%s deals %s damage to him/herself\n", from.getName(), healthReduction - bonus));
         }
         if(damage > 0){
-            System.out.println(String.format("%s deals %s damage to %s", from.getName(), damage + bonus,to.getName()));
+            builder.append(String.format("%s deals %s damage to %s\n", from.getName(), damage + bonus,to.getName()));
         }
+        return  builder.toString();
     }
+
 }

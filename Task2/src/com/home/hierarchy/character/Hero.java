@@ -2,20 +2,18 @@ package com.home.hierarchy.character;
 
 import com.home.hierarchy.CombatLog;
 import com.home.hierarchy.race.Race;
-import com.home.hierarchy.role.Paladin;
-import com.home.hierarchy.role.Role;
-import com.home.hierarchy.role.Warlock;
+import com.home.hierarchy.role.RoleEnum;
 
 import java.lang.*;
 
-public class Hero extends Character {
-    private Role role;
+public class Hero extends CharacterCreature {
+    private RoleEnum role;
     private int level;
 
-    public Hero(String name, Race race, Role role, int level) throws HeroException {
+    public Hero(String name, Race race, RoleEnum role, int level) throws HeroException {
         super(name, role.getMaxHealth(), race);
-        if (race == Race.HUMAN && role instanceof Warlock
-                || race == Race.UNDEAD && role instanceof Paladin) {
+        if (race == Race.HUMAN && role == RoleEnum.WARLOCK
+                || race == Race.UNDEAD && role == RoleEnum.PALADIN) {
             throw new HeroException("Race and role are incommensurable");
         }
         if (level < 1 || level > 10) {
@@ -29,9 +27,10 @@ public class Hero extends Character {
         return level;
     }
 
-    public void cast(Creature creature) {
-        CombatLog.log(this,creature,role.getSpell());
+    public String cast(Creature creature) {
+        String log = CombatLog.getLog(this,creature,role.getSpell());
         role.castSpell(this,creature);
+        return log;
     }
 
     public void heal(int heal) {

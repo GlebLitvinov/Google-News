@@ -1,6 +1,6 @@
 package com.home.hierarchy.spell;
 
-import com.home.hierarchy.role.Assassin;
+import com.home.hierarchy.role.RoleEnum;
 
 public class Spell {
     private String name;
@@ -8,16 +8,21 @@ public class Spell {
     private int healthReduction;
     private int damage;
 
-    public Spell(String name, int heal, int healthReduction, int damage) throws SpellException {
-        int imba = Assassin.ASSASSINS_MAX_HEALTH / 2;
-        if (heal > imba || healthReduction > imba || damage > imba) {
-            throw new SpellException("Spell is not balanced");
-        }
-        if (heal < 0 || healthReduction < 0 || damage < 0){
-            throw new SpellException("Spell power can't be negative");
-        }
-        if(healthReduction != 0 && healthReduction < 10){
-            throw new SpellException("Health reduction mus be not less then 10");
+
+    public Spell(String name, int heal, int healthReduction, int damage){
+        try {
+            int imba = RoleEnum.ASSASSINS_MAX_HEALTH / 2;
+            if (heal > imba || healthReduction > imba || damage > imba) {
+                throw new SpellException("Spell is not balanced");
+            }
+            if (heal < 0 || healthReduction < 0 || damage < 0) {
+                throw new SpellException("Spell power can't be negative");
+            }
+            if (healthReduction != 0 && healthReduction < 10) {
+                throw new SpellException("Health reduction mus be not less then 10");
+            }
+        } catch (SpellException e){
+            e.printStackTrace();
         }
         this.name = name;
         this.heal = heal;

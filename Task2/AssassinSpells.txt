@@ -1,0 +1,2 @@
+BackStab 0 0 25
+Vampirism 5 0 15
